@@ -14,11 +14,14 @@
 @media only screen and (max-width: 600px) {
 }
 .map {
-  width: 800px;
+  width: 100vw;
   height: 400px;
   background: rgb(235, 154, 154);
   border-radius: 10px;
   margin: 1%;
+}
+#start-session {
+  margin-top: 5%;
 }
 
 #space {

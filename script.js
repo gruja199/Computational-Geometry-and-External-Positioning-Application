@@ -316,6 +316,10 @@ function initMap() {
 
   // Square Area
   //console.log(google.maps.geometry.spherical.computeArea(polygon.getPath()));
+
+  document.getElementById("square-area").innerHTML =
+    "Square Area: " +
+    google.maps.geometry.spherical.computeArea(polygon.getPath());
 }
 
 const getPosition = () => {
@@ -412,8 +416,9 @@ function onSessionStart(e) {
 }
 
 function onSessionEnd(e) {
-  if (ulSessions.firstChild.hasAttribute("id")) {
-    ulSessions.firstChild.remove();
+  if (ulSessions.firstChild !== null) {
+    if (ulSessions.firstChild.hasAttribute("id"))
+      ulSessions.firstChild.remove();
   }
   if (coords.length < 10) {
     const a = confirm(
@@ -427,27 +432,28 @@ function onSessionEnd(e) {
       btnEndSession.classList.replace("session-true", "session-false");
       coords = new Array();
     }
-  } else {
+  } else if (coords.length >= 10) {
     textStatus.classList.replace("session-true", "session-false");
     btnSaveCoords.classList.replace("session-true", "session-false");
     btnStartSession.classList.replace("session-false", "session-true");
     e.target.classList.replace("session-true", "session-false");
+
+    coords.push(sessionCounter);
+    storeCounter(sessionCounter);
+    storeTaskInLocalStorage(coords.flat(Infinity));
+
+    ulSessions.innerHTML +=
+      "<li class='list-group-item text-dark'><span class='text-small'>Session " +
+      sessionCounter +
+      "</span><span id='" +
+      ulSessions.childElementCount +
+      "' class='btn btn-sm btn-outline-danger ml-2 float-right deleteEl'>Delete</span><span id='" +
+      ulSessions.childElementCount +
+      "' class='btn btn-sm btn-outline-primary float-right viewEl'>View</span></li>";
+    sessionCounter++;
+    localStorage.setItem("counter", sessionCounter);
+    coords = new Array();
   }
-
-  coords.push(sessionCounter);
-  storeCounter(sessionCounter);
-  storeTaskInLocalStorage(coords.flat(Infinity));
-
-  ulSessions.innerHTML +=
-    "<li class='list-group-item text-dark'><span class='text-small'>Session " +
-    sessionCounter +
-    "</span><span id='" +
-    ulSessions.childElementCount +
-    "' class='btn btn-sm btn-outline-danger ml-2 float-right deleteEl'>Delete</span><span id='" +
-    ulSessions.childElementCount +
-    "' class='btn btn-sm btn-outline-primary float-right viewEl'>View</span></li>";
-  sessionCounter++;
-  localStorage.setItem("counter", sessionCounter);
 }
 function deleteListEl(e) {
   if (e.target.classList.contains("viewEl")) {
